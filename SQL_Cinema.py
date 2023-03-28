@@ -3,10 +3,21 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import sqlite3
 
-
-
-
 import random
+
+import TestConnection
+import CreateDatabase
+
+exec(open('CreateDatabase.py').read())
+exec(open('TestConnection.py').read())
+#Szebb verzió, ha az exec nem működik:
+#import os
+#os.system('py CreateDatabase.py')
+#os.system('py TestConnection.py')
+
+
+
+
 
 
 

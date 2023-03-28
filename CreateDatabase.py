@@ -9,7 +9,7 @@ connection = pymysql.connect(
     )
 cursor = connection.cursor()
 
-print(cursor.execute("SHOW DATABASES"))
+#print(cursor.execute("SHOW DATABASES"))
 
 try:
     cursor.execute("CREATE DATABASE cinema")

@@ -1,19 +1,26 @@
 import pymysql
 import mysql.connector
 
-connection = pymysql.connect(
-    host="localhost",
-    port=3306,
-    user="rot", 
-    passwd="", 
-    database="cinema")
-cursor = connection.cursor()
+
+
 
 try:
+    connection = pymysql.connect(
+    host="localhost",
+    port=3306,
+    user="root", 
+    passwd="", 
+    database="cinema")
+    cursor = connection.cursor()
+    
     if(connection):
         print("-----------------Connection Successful-----------------")
+    
+    connection.close()
 except Exception as e:
-    print("-----------------Problem with Connection-----------------")
+    print(f"-----------------Connection Failed-----------------")
     print(f"-----------------{str(e)}-----------------")
 
-connection.close()
+    
+
+
