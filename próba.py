@@ -1,7 +1,6 @@
 from tkinter.ttk import *
 import tkinter as tk
 from ttkbootstrap.constants import *
-import random
 from tkinter import *
 import ttkbootstrap as ttk
 

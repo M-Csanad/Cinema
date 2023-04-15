@@ -1,8 +1,11 @@
 import tkinter as tk
+from tkinter import *
 import ttkbootstrap as ttk
+from tkinter.ttk import *
 from ttkbootstrap.constants import *
-import sqlite3
 import random
+
+import sqlite3
 
 import TestConnection 
 import CreateDatabase
@@ -61,7 +64,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl):
 # ---------/SQL---------
 
 root = tk.Tk()
-style = ttk.Style('darkly')
+style = ttk.Style('vapor')
 root.resizable(False, False)
 root.eval('tk::PlaceWindow . center')
 root.title('Cinema')
@@ -88,35 +91,31 @@ for data in (cursor.fetchall()):
     LP_category_lst.append(data[4])
     LP_playtime_lst.append(data[5])
 
-btn01 = ttk.Button(root, text=film_lst[0], bootstyle=DARK, command=lambda: Info(
+btn01 = ttk.Button(root, text=film_lst[0], style=LIGHT,  command=lambda: Info(
     teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0]))
-btn02 = ttk.Button(root, text=film_lst[1], bootstyle=DARK, command=lambda: Info(
+
+btn02 = ttk.Button(root, text=film_lst[1], style=LIGHT,  command=lambda: Info(
     teremszam_lst[1], film_lst[1], maxhely_lst[1], LP_year_lst[1], LP_category_lst[1], LP_playtime_lst[1]))
-btn03 = ttk.Button(root, text=film_lst[2], bootstyle=DARK, command=lambda: Info(
+
+btn03 = ttk.Button(root, text=film_lst[2], style=LIGHT,  command=lambda: Info(
     teremszam_lst[2], film_lst[2], maxhely_lst[2], LP_year_lst[2], LP_category_lst[2], LP_playtime_lst[2]))
-btn04 = ttk.Button(root, text=film_lst[3], bootstyle=DARK, command=lambda: Info(
+
+btn04 = ttk.Button(root, text=film_lst[3], style=LIGHT,  command=lambda: Info(
     teremszam_lst[3], film_lst[3], maxhely_lst[3], LP_year_lst[3], LP_category_lst[3], LP_playtime_lst[3]))
-btn05 = ttk.Button(root, text=film_lst[2], bootstyle=DARK, command=lambda: Info(
+
+btn05 = ttk.Button(root, text=film_lst[4], style=LIGHT,  command=lambda: Info(
     teremszam_lst[4], film_lst[4], maxhely_lst[4], LP_year_lst[4], LP_category_lst[4], LP_playtime_lst[4]))
-btn06 = ttk.Button(root, text=film_lst[3], bootstyle=DARK, command=lambda: Info(
+
+btn06 = ttk.Button(root, text=film_lst[5], style=LIGHT,  command=lambda: Info(
     teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5]))
 
 
-# curTer.execute("""INSERT INTO Foglalások VALUES
-#        (00001, 'KeresztN01', 'VezetekN01', 001, 001),
-#        (00002, 'KeresztN02', 'VezetekN02', 125, 002),
-#        (00003, 'KeresztN03', 'VezetekN03', 111, 003),
-#        (00004, 'KeresztN04', 'VezetekN04', 92, 004),
-#        (00005, 'KeresztN05', 'VezetekN05', 101, 005),
-#        (00006, 'KeresztN06', 'VezetekN06', 077, 006),
-#        (00007, 'KeresztN07', 'VezetekN07', 002, 001),
-#        """)
-
-
-btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn02.grid(row=0, column=1, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn03.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn04.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
+btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn02.grid(row=0, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn03.grid(row=0, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn04.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn05.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn06.grid(row=1, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 
 
 
