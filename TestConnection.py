@@ -1,9 +1,6 @@
 import pymysql
 import mysql.connector
 
-
-
-
 try:
     connection = pymysql.connect(
     host="localhost",
