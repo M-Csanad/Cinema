@@ -4,7 +4,7 @@ import ttkbootstrap as ttk
 from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import random
-
+import os
 import sqlite3
 
 import TestConnection 
@@ -43,20 +43,27 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl):
     category = lp_ca
     time = lp_pl
 
-    teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#222222', foreground='#F8F9FA')
-    film_lb = ttk.Label(root_info, text=f"Vetített film: {film}", background='#222222', foreground='#F8F9FA')
+    with open('filminfok.txt', 'r') as f:
+        adatok = [adatok.strip('\n').split() for sor in f]
+        TEXT = terem
+
+
+
+    film_lb = ttk.Label(root_info, text=f"{film}", background='#222222', foreground='#F8F9FA')
     low_prio_lb = ttk.Label(root_info, text=f"Egyéb információ: \n\tÉv: {date}\n\tKategória: {category}\n\tJátékidő: {time}", background='#222222', foreground='#F8F9FA')
     maxhely_lb = ttk.Label(root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#222222', foreground='#F8F9FA')
     szabad_lb = ttk.Label(root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#222222', foreground='#F8F9FA')
+    teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#222222', foreground='#F8F9FA')
 
     btn = ttk.Button(root_info, text="Jegyfoglalás", bootstyle=DARK ,command=lambda:Foglal)
 
     
-    teremszam_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
-    film_lb.grid(row=1, column=0, sticky=W, padx=5, pady=5)
-    low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
-    maxhely_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-    szabad_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
+
+    film_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
+    low_prio_lb.grid(row=1, column=0, sticky=W, padx=5, pady=5)
+    maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+    szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+    teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
     
     btn.grid(row=2, column=1, sticky=E, padx=5, pady=5)
 
