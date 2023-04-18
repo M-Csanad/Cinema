@@ -1,46 +1,37 @@
 import tkinter as tk
+from tkinter import *
 import ttkbootstrap as ttk
+from tkinter.ttk import *
 from ttkbootstrap.constants import *
-import sqlite3
 import random
 
+import sqlite3
 
-# ---------SQL---------
-con = sqlite3.connect("CINEMA.db")
+import TestConnection 
+import CreateDatabase
+from CreateDatabase import *
 
-curTer = con.cursor()
-curFog = con.cursor()
+exec(open('TestConnection.py').read())
+exec(open('CreateDatabase.py').read())
 
-curTer.execute('''CREATE TABLE IF NOT EXISTS Termek (
-    Terem_szam INTEGER PRIMARY KEY,
-    Terem_film TEXT,
-    LOW_PRIO VARCHAR,
-    Terem_maxhely INTEGER
-    )''')
+#Szebb verzió, ha az exec nem működik:
+#import os
+#os.system('py CreateDatabase.py')
+#os.system('py TestConnection.py')
 
-curFog.execute('''CREATE TABLE IF NOT EXISTS Foglalások (
-    Foglal_sorszam INTEGER PRIMARY KEY,
-    Keresztnev TEXT,
-    Vezetéknev TEXT,
-    Szekszam INTEGER,
-    
-    Teremszam INTEGER,
-    FOREIGN KEY (Teremszam) REFERENCES Termek(Terem_szam)
-    )''')
+cursor = CreateDatabase.cursor
 
-
-curTer.execute("""INSERT OR REPLACE INTO Termek VALUES
-        (01, 'Film01', '2020;Horror;120perc', 250),
-        (02, 'Film02', '2020;Comedy;140perc', 250),
-        (03, 'Film03', '2020;Fantasy;90perc', 150),
-        (04, 'Film04', '2021;Thriller;110perc', 250)
-        """)
 
 def Foglal():
     None
 
-def Info(terem, film, lwp, maxh):
-
+def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl):
+    terem = int(terem)
+    maxh = int(maxh)
+    lp_ye = int(lp_ye)
+    lp_pl = int(lp_pl)
+    
+    
     root_info = tk.Tk()
     style_info = ttk.Style('darkly')
     root_info.resizable(False, False)
@@ -48,9 +39,9 @@ def Info(terem, film, lwp, maxh):
     root_info.title('Jegyfoglalás')
     
     betelt = random.randint(0, maxh)
-    date = lwp[0]
-    category = lwp[1]
-    time = lwp[2]
+    date = lp_ye
+    category = lp_ca
+    time = lp_pl
 
     teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#222222', foreground='#F8F9FA')
     film_lb = ttk.Label(root_info, text=f"Vetített film: {film}", background='#222222', foreground='#F8F9FA')
@@ -73,7 +64,7 @@ def Info(terem, film, lwp, maxh):
 # ---------/SQL---------
 
 root = tk.Tk()
-style = ttk.Style('darkly')
+style = ttk.Style('vapor')
 root.resizable(False, False)
 root.eval('tk::PlaceWindow . center')
 root.title('Cinema')
@@ -82,53 +73,51 @@ tk.Grid.rowconfigure(root, 0, weight=1)
 tk.Grid.columnconfigure(root, 0, weight=1)
 
 
-select = curTer.execute(
-    "SELECT Terem_szam, Terem_film, LOW_PRIO, Terem_maxhely FROM Termek")
-
+select = cursor.execute(
+    "SELECT termek.TEREM_SZAM, termek.TEREM_FILM, termek.TEREM_MAXHELY, low_prio.YEAR, low_prio.CATEGORY, low_prio.PLAYTIME FROM termek INNER JOIN low_prio ON termek.LOW_PRIO = low_prio.LP_ID")
 
 teremszam_lst = []
 film_lst = []
-low_prio_lst = []
 maxhely_lst = []
+LP_year_lst = []
+LP_category_lst = []
+LP_playtime_lst = []
 
-for data in (select):
+for data in (cursor.fetchall()):
     teremszam_lst.append(data[0])
     film_lst.append(data[1])
-    low_prio_lst.append(data[2])
-    maxhely_lst.append(data[3])
+    maxhely_lst.append(data[2])
+    LP_year_lst.append(data[3])
+    LP_category_lst.append(data[4])
+    LP_playtime_lst.append(data[5])
 
-lwp_lst = []
-for index in low_prio_lst:
-    lwp_lst.append(index.split(';'))
+btn01 = ttk.Button(root, text=film_lst[0], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0]))
 
+btn02 = ttk.Button(root, text=film_lst[1], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[1], film_lst[1], maxhely_lst[1], LP_year_lst[1], LP_category_lst[1], LP_playtime_lst[1]))
 
-btn01 = ttk.Button(root, text=film_lst[0], bootstyle=DARK, command=lambda: Info(
-    teremszam_lst[0], film_lst[0], lwp_lst[0], maxhely_lst[0]))
-btn02 = ttk.Button(root, text=film_lst[1], bootstyle=DARK, command=lambda: Info(
-    teremszam_lst[1], film_lst[1], lwp_lst[1], maxhely_lst[1]))
-btn03 = ttk.Button(root, text=film_lst[2], bootstyle=DARK, command=lambda: Info(
-    teremszam_lst[2], film_lst[2], lwp_lst[2], maxhely_lst[2]))
-btn04 = ttk.Button(root, text=film_lst[3], bootstyle=DARK, command=lambda: Info(
-    teremszam_lst[3], film_lst[3], lwp_lst[3], maxhely_lst[3]))
+btn03 = ttk.Button(root, text=film_lst[2], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[2], film_lst[2], maxhely_lst[2], LP_year_lst[2], LP_category_lst[2], LP_playtime_lst[2]))
 
+btn04 = ttk.Button(root, text=film_lst[3], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[3], film_lst[3], maxhely_lst[3], LP_year_lst[3], LP_category_lst[3], LP_playtime_lst[3]))
 
-# curTer.execute("""INSERT INTO Foglalások VALUES
-#        (00001, 'KeresztN01', 'VezetekN01', 001, 001),
-#        (00002, 'KeresztN02', 'VezetekN02', 125, 002),
-#        (00003, 'KeresztN03', 'VezetekN03', 111, 003),
-#        (00004, 'KeresztN04', 'VezetekN04', 92, 004),
-#        (00005, 'KeresztN05', 'VezetekN05', 101, 005),
-#        (00006, 'KeresztN06', 'VezetekN06', 077, 006),
-#        (00007, 'KeresztN07', 'VezetekN07', 002, 001),
-#        """)
+btn05 = ttk.Button(root, text=film_lst[4], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[4], film_lst[4], maxhely_lst[4], LP_year_lst[4], LP_category_lst[4], LP_playtime_lst[4]))
+
+btn06 = ttk.Button(root, text=film_lst[5], style=LIGHT,  command=lambda: Info(
+    teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5]))
 
 
-btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn02.grid(row=0, column=1, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn03.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
-btn04.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=20, padx=5, pady=5)
+btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn02.grid(row=0, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn03.grid(row=0, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn04.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn05.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn06.grid(row=1, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 
 
-con.commit()
-con.close()
+
+cursor.close()
 root.mainloop()
