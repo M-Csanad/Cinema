@@ -42,7 +42,8 @@ try:
     LP_ID INT NOT NULL PRIMARY KEY,
     YEAR CHAR(4) NOT NULL,
     CATEGORY VARCHAR(60) NOT NULL,
-    PLAYTIME CHAR(3) NOT NULL)
+    PLAYTIME CHAR(3) NOT NULL,
+    PRICE VARCHAR(4) NOT NULL)
     '''    
     )
 
@@ -50,16 +51,16 @@ try:
     
     
     val = [
-        (0, 2023, 'Krimi;Akciófilm;Thriller;Krimi', 169),
-        (1, 2022, 'Kalandfilm,Fantasy', 122),
-        (2, 2022, 'Fantasy;Sci-Fi;Akció', 192),
-        (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120),
-        (4, 2023, 'Dráma;Fikció', 117),
-        (5, 2023, 'Akció;Kalandfilm', 134)     
+        (0, 2023, 'Krimi;Akciófilm;Thriller;Krimi', 169, 2680),
+        (1, 2022, 'Kalandfilm,Fantasy', 122, 2500),
+        (2, 2022, 'Fantasy;Sci-Fi;Akció', 192, 2100),
+        (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120, 2400),
+        (4, 2023, 'Dráma;Fikció', 117, 1850),
+        (5, 2023, 'Akció;Kalandfilm', 134, 1850)     
     ]
 
     INSERT_LowPrio = (
-        "INSERT INTO `Low_Prio` VALUES (%s,%s,%s,%s) ON DUPLICATE KEY UPDATE LP_ID = VALUES(LP_ID)"
+        "INSERT INTO `Low_Prio` VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE LP_ID = VALUES(LP_ID)"
     )
 
     cursor.executemany(INSERT_LowPrio, val)
