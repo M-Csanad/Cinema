@@ -9,7 +9,7 @@ connection = pymysql.connect(
 )
 
 cursor = connection.cursor()
-cursor.execute("CREATE DATABASE IF NOT EXISTS `cinema`")
+cursor.execute("CREATE DATABASE IF NOT EXISTS `cinema` CHARACTER SET utf8mb4 COLLATE utf8mb4_hungarian_ci")
 connection = pymysql.connect(
     host="localhost",
     port=3306,
@@ -44,7 +44,7 @@ try:
     CATEGORY VARCHAR(60) NOT NULL,
     PLAYTIME CHAR(3) NOT NULL,
     PRICE VARCHAR(4) NOT NULL,
-    DESCRIPTION TEXT NOT NULL)
+    AGE CHAR(2) NOT NULL)
     '''    
     )
 
@@ -52,12 +52,12 @@ try:
     
     
     val = [
-        (0, 2023, 'Krimi;Akciófilm;Thriller;Krimi', 169, 2680, ''),
-        (1, 2022, 'Kalandfilm,Fantasy', 122, 2500, ''),
-        (2, 2022, 'Fantasy;Sci-Fi;Akció', 192, 2100, ''),
-        (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120, 2400, ''),
-        (4, 2023, 'Dráma;Fikció', 117, 1850, ''),
-        (5, 2023, 'Akció;Kalandfilm', 134, 1850, '')     
+        (0, 2023, 'Krimi;Akciófilm;Thriller', 169, 2680, 18),
+        (1, 2022, 'Kalandfilm,Fantasy', 122, 2500, 12),
+        (2, 2022, 'Fantasy;Sci-Fi;Akció', 192, 2100, 16),
+        (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120, 2400, 12),
+        (4, 2023, 'Dráma;Fikció', 117, 1850, 16),
+        (5, 2023, 'Akció;Kalandfilm', 134, 1850, 12)     
     ]
 
     INSERT_LowPrio = (

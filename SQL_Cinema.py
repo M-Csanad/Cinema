@@ -5,7 +5,7 @@ from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import random
 import os
-import sqlite3
+
 
 import TestConnection 
 import CreateDatabase
@@ -20,7 +20,6 @@ exec(open('CreateDatabase.py').read())
 #os.system('py TestConnection.py')
 
 cursor = CreateDatabase.cursor
-TABLE_LowPrio = CreateDatabase.TABLE_LowPrio
 
 
 def Foglal(price):
@@ -107,7 +106,7 @@ def Foglal(price):
     
     
 
-def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price):
+def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     terem = int(terem)
     maxh = int(maxh)
     lp_ye = int(lp_ye)
@@ -124,51 +123,44 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price):
     date = lp_ye
     category = lp_ca
     time = lp_pl
+    age = lp_age
 
     with open('txt/filminfok.txt', 'r', encoding='utf-8') as f:
         lines = [line.strip('\n') for line in f]
 
-    val = [
-        (str(lines[0])),
-        (str(lines[1])),
-        (str(lines[2])),
-        (str(lines[3])),
-        (str(lines[4])),
-        (str(lines[5]))     
-    ]
 
-    INSERT_LowPrio = (
-        "INSERT OR UPDATE INTO Low_Prio (DESCRIPTION) VALUES (%s)"
-    )
-
-    cursor.executemany(INSERT_LowPrio, val)
+    film_lb = tk.Label(root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
+    film_date = tk.Label(root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA')
+    film_desc_TXT = tk.Text(root_info, background='#1A0933', foreground='#F8F9FA')
+    film_desc_TXT.insert(INSERT, f"{lines[lp_id]}")
     
-
+    lb_TXT = film_desc_TXT.get("1.0", END)
+    film_desc = Label(root_info, text=lb_TXT, background='#1A0933', foreground='#F8F9FA', wraplength=330)
     
     
+    film_age = tk.Label(root_info, text=f"{age}",background='#1A0933', foreground='#F8F9FA')
+
+    low_prio_lb = tk.Label(root_info, text=f"{category} | {time}perc", background='#1A0933', foreground='#F8F9FA')
     
+    
+    maxhely_lb = tk.Label(root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
+    szabad_lb = tk.Label(root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
+    teremszam_lb = tk.Label(root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
-
-    film_lb = ttk.Label(root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
-    film_desc = ttk.Label(root_info, text=f"{lines}",background='#1A0933', foreground='#F8F9FA')
-
-    low_prio_lb = ttk.Label(root_info, text=f"Egyéb információ: \n\tÉv: {date}\n\tKategória: {category}\n\tJátékidő: {time}", background='#1A0933', foreground='#F8F9FA')
-    maxhely_lb = ttk.Label(root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
-    szabad_lb = ttk.Label(root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
-    teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
-
-    btn = ttk.Button(root_info, text="Jegyfoglalás", style=LIGHT, command=lambda:Foglal(price))
+    btn = tk.Button(root_info, text="Jegyfoglalás", bg='#1A0933', command=lambda:Foglal(price) )
 
     
 
     film_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
+    film_date.grid(row=0, column=1, sticky=W, padx=5, pady=5)
+    film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
+    low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+    film_age.grid(row=2, column=1, sticky=W, padx=5, pady=5)
+    #maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+    #szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+    #teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
     
-    low_prio_lb.grid(row=1, column=0, sticky=W, padx=5, pady=5)
-    maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
-    szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-    teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
-    
-    btn.grid(row=2, column=1, sticky=E, padx=5, pady=5)
+    btn.grid(row=3, column=0, sticky=W, padx=5, pady=5)
 
 
 # ---------/SQL---------
@@ -185,7 +177,7 @@ tk.Grid.columnconfigure(root, 0, weight=1)
 
 
 select = cursor.execute(
-    "SELECT termek.TEREM_SZAM, termek.TEREM_FILM, termek.TEREM_MAXHELY, low_prio.YEAR, low_prio.CATEGORY, low_prio.PLAYTIME, low_prio.PRICE FROM termek INNER JOIN low_prio ON termek.LOW_PRIO = low_prio.LP_ID")
+    "SELECT termek.TEREM_SZAM, termek.TEREM_FILM, termek.TEREM_MAXHELY, low_prio.YEAR, low_prio.CATEGORY, low_prio.PLAYTIME, low_prio.PRICE, low_prio.LP_ID, low_prio.AGE FROM termek INNER JOIN low_prio ON termek.LOW_PRIO = low_prio.LP_ID")
 
 teremszam_lst = []
 film_lst = []
@@ -194,6 +186,8 @@ LP_year_lst = []
 LP_category_lst = []
 LP_playtime_lst = []
 LP_price_lst = []
+LP_age_lst = []
+LP_ID = []
 
 for data in (cursor.fetchall()):
     teremszam_lst.append(data[0])
@@ -203,24 +197,27 @@ for data in (cursor.fetchall()):
     LP_category_lst.append(data[4])
     LP_playtime_lst.append(data[5])
     LP_price_lst.append(data[6])
+    LP_ID.append(data[7])
+    LP_age_lst.append(data[8])
+
 
 btn01 = Button(root, text=film_lst[0], style=LIGHT, command=lambda: Info(
-    teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0], LP_price_lst[0]))
+    teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0], LP_price_lst[0], LP_ID[0], LP_age_lst[0]))
 
 btn02 = Button(root, text=film_lst[1], style=LIGHT, command=lambda: Info(
-    teremszam_lst[1], film_lst[1], maxhely_lst[1], LP_year_lst[1], LP_category_lst[1], LP_playtime_lst[1], LP_price_lst[1]))
+    teremszam_lst[1], film_lst[1], maxhely_lst[1], LP_year_lst[1], LP_category_lst[1], LP_playtime_lst[1], LP_price_lst[1], LP_ID[1], LP_age_lst[1]))
 
 btn03 = Button(root, text=film_lst[2], style=LIGHT, command=lambda: Info(
-    teremszam_lst[2], film_lst[2], maxhely_lst[2], LP_year_lst[2], LP_category_lst[2], LP_playtime_lst[2], LP_price_lst[2]))
+    teremszam_lst[2], film_lst[2], maxhely_lst[2], LP_year_lst[2], LP_category_lst[2], LP_playtime_lst[2], LP_price_lst[2], LP_ID[2], LP_age_lst[2]))
 
 btn04 = Button(root, text=film_lst[3], style=LIGHT, command=lambda: Info(
-    teremszam_lst[3], film_lst[3], maxhely_lst[3], LP_year_lst[3], LP_category_lst[3], LP_playtime_lst[3], LP_price_lst[3]))
+    teremszam_lst[3], film_lst[3], maxhely_lst[3], LP_year_lst[3], LP_category_lst[3], LP_playtime_lst[3], LP_price_lst[3], LP_ID[3], LP_age_lst[3]))
 
 btn05 = Button(root, text=film_lst[4], style=LIGHT, command=lambda: Info(
-    teremszam_lst[4], film_lst[4], maxhely_lst[4], LP_year_lst[4], LP_category_lst[4], LP_playtime_lst[4], LP_price_lst[4]))
+    teremszam_lst[4], film_lst[4], maxhely_lst[4], LP_year_lst[4], LP_category_lst[4], LP_playtime_lst[4], LP_price_lst[4], LP_ID[4], LP_age_lst[4]))
 
 btn06 = Button(root, text=film_lst[5], style=LIGHT, command=lambda: Info(
-    teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5], LP_price_lst[5]))
+    teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5], LP_price_lst[5], LP_ID[5], LP_age_lst[5]))
 
 
 btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
