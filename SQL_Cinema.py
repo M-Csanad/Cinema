@@ -20,6 +20,7 @@ exec(open('CreateDatabase.py').read())
 #os.system('py TestConnection.py')
 
 cursor = CreateDatabase.cursor
+TABLE_LowPrio = CreateDatabase.TABLE_LowPrio
 
 
 def Foglal(price):
@@ -124,23 +125,44 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price):
     category = lp_ca
     time = lp_pl
 
-    with open('filminfok.txt', 'r') as f:
-        adatok = [adatok.strip('\n').split() for sor in f]
-        TEXT = terem
+    with open('txt/filminfok.txt', 'r', encoding='utf-8') as f:
+        lines = [line.strip('\n') for line in f]
+
+    val = [
+        (str(lines[0])),
+        (str(lines[1])),
+        (str(lines[2])),
+        (str(lines[3])),
+        (str(lines[4])),
+        (str(lines[5]))     
+    ]
+
+    INSERT_LowPrio = (
+        "INSERT OR UPDATE INTO Low_Prio (DESCRIPTION) VALUES (%s)"
+    )
+
+    cursor.executemany(INSERT_LowPrio, val)
+    
+
+    
+    
+    
 
 
+    film_lb = ttk.Label(root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
+    film_desc = ttk.Label(root_info, text=f"{lines}",background='#1A0933', foreground='#F8F9FA')
 
-    film_lb = ttk.Label(root_info, text=f"{film}", background='#222222', foreground='#F8F9FA')
-    low_prio_lb = ttk.Label(root_info, text=f"Egyéb információ: \n\tÉv: {date}\n\tKategória: {category}\n\tJátékidő: {time}", background='#222222', foreground='#F8F9FA')
-    maxhely_lb = ttk.Label(root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#222222', foreground='#F8F9FA')
-    szabad_lb = ttk.Label(root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#222222', foreground='#F8F9FA')
-    teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#222222', foreground='#F8F9FA')
+    low_prio_lb = ttk.Label(root_info, text=f"Egyéb információ: \n\tÉv: {date}\n\tKategória: {category}\n\tJátékidő: {time}", background='#1A0933', foreground='#F8F9FA')
+    maxhely_lb = ttk.Label(root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
+    szabad_lb = ttk.Label(root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
+    teremszam_lb = ttk.Label(root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
     btn = ttk.Button(root_info, text="Jegyfoglalás", style=LIGHT, command=lambda:Foglal(price))
 
     
 
     film_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
+    
     low_prio_lb.grid(row=1, column=0, sticky=W, padx=5, pady=5)
     maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
