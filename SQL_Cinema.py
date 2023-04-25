@@ -21,9 +21,41 @@ exec(open('CreateDatabase.py').read())
 
 cursor = CreateDatabase.cursor
 
+def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
+    price = int(price)
+    ticket_2D_db = int(ticket_2D_db) 
+    ticket_3D_db = int(ticket_3D_db)
+    
+    full_price = ((price*ticket_2D_db) + ((price+730)*ticket_3D_db))
+    
+    
+    ticket_countErrorCheck = 0
+        
+    if ((ticket_2D != ('NONE')) and (ticket_2D_db == 0)) or ((ticket_3D != ('NONE')) and (ticket_3D_db == 0)):
+        print("Helytelen - no count")
+    else:
+        ticket_countErrorCheck += 1
+        
+    if ((ticket_2D == ('NONE')) and (ticket_2D_db != 0)) or ((ticket_3D == ('NONE')) and (ticket_3D_db != 0)):
+        print("Helytelen - no ticket type")
+    else:
+        ticket_countErrorCheck += 1
+    
+    if (ticket_2D == ('NONE')) and (ticket_3D == ('NONE')):
+        print("Valamit kell választani")
+    
+    else:
+        ticket_countErrorCheck += 1
+        if ticket_2D == ('NONE'):
+            print("Nem válaszott 2D filmet.")
+        elif ticket_3D == ('NONE'):
+            print("Nem válaszott 3D filmet.")
+    
+    if ticket_countErrorCheck == 3:
+        os.system('py SignUp.py')
+    
 
 def Foglal(price):
-    #Junior; Szenior; Felnőtt
     root_foglal = tk.Tk()
     style = ttk.Style('vapor')
     root_foglal.resizable(False, False)
@@ -34,37 +66,37 @@ def Foglal(price):
     tk.Grid.columnconfigure(root, 0, weight=1)
        
     
-    lb_title = Label(root_foglal, text="JEGYEK KIVÁLASZTÁSA", justify=CENTER, anchor=CENTER)
-    lb_text00 = Label(root_foglal, text="IDŐPONT", justify=CENTER, anchor=CENTER)
-    lb_text01 = Label(root_foglal, text="TÍPUS", justify=CENTER, anchor=CENTER)
-    lb_text02 = Label(root_foglal, text="ÁR/DB", justify=CENTER, anchor=CENTER)
-    lb_text03 = Label(root_foglal, text="DARAB", justify=CENTER, anchor=CENTER)
-    lb_text04 = Label(root_foglal, text="JEGY KATEGÓRIA", justify=CENTER, anchor=CENTER)
-    lb_time3D = Label(root_foglal, text="14:05", justify=CENTER, anchor=CENTER)
-    lb_time2D = Label(root_foglal, text="18:00", justify=CENTER, anchor=CENTER)
+    lb_title = tk.Label(root_foglal, text="JEGYEK KIVÁLASZTÁSA", justify=CENTER, anchor=CENTER)
+    lb_text00 = tk.Label(root_foglal, text="IDŐPONT", justify=CENTER, anchor=CENTER)
+    lb_text01 = tk.Label(root_foglal, text="TÍPUS", justify=CENTER, anchor=CENTER)
+    lb_text02 = tk.Label(root_foglal, text="ÁR/DB", justify=CENTER, anchor=CENTER)
+    lb_text03 = tk.Label(root_foglal, text="DARAB", justify=CENTER, anchor=CENTER)
+    lb_text04 = tk.Label(root_foglal, text="JEGY KATEGÓRIA", justify=CENTER, anchor=CENTER)
+    lb_time3D = tk.Label(root_foglal, text="14:05", justify=CENTER, anchor=CENTER)
+    lb_time2D = tk.Label(root_foglal, text="18:00", justify=CENTER, anchor=CENTER)
     
-    lb_3D = Label(root_foglal, text="3D", justify=CENTER, anchor=CENTER)
-    lb_2D = Label(root_foglal, text="2D", justify=CENTER, anchor=CENTER)
-    lb_price2D = Label(root_foglal, text=f"{price}", justify=CENTER, anchor=CENTER)
-    lb_price3D = Label(root_foglal, text=f"{(int(price)+730)}", justify=CENTER, anchor=CENTER)
+    lb_3D = tk.Label(root_foglal, text="3D", justify=CENTER, anchor=CENTER)
+    lb_2D = tk.Label(root_foglal, text="2D", justify=CENTER, anchor=CENTER)
+    lb_price2D = tk.Label(root_foglal, text=f"{price}", justify=CENTER, anchor=CENTER)
+    lb_price3D = tk.Label(root_foglal, text=f"{(int(price)+730)}", justify=CENTER, anchor=CENTER)
+    
     
     menu3D_C = tk.StringVar(root_foglal)
-    menu3D_C.set("Válasszon")
-    drop3D_C = tk.OptionMenu(root_foglal, menu3D_C, "Junior", "Senior", "Felnőtt", "Kedvezményezett")
+    menu3D_C.set("NONE")
+    drop3D_C = tk.OptionMenu(root_foglal, menu3D_C, "NONE", "Junior", "Senior", "Felnőtt", "Kedvezményezett")
     drop3D_C.config(bg="#1A0933", fg="#32FBE2",
                 activebackground="#30125F", activeforeground="#32FBE2")
     drop3D_C["menu"].config(bg="#1A0933", fg="#32FBE2",
                 activebackground="#30125F", activeforeground="#32FBE2")
     
     menu2D_C = tk.StringVar(root_foglal)
-    menu2D_C.set("Válasszon")
-    drop2D_C = tk.OptionMenu(root_foglal, menu3D_C, "Junior", "Senior", "Felnőtt", "Kedvezményezett")
+    menu2D_C.set("NONE")
+    drop2D_C = tk.OptionMenu(root_foglal, menu2D_C, "NONE", "Junior", "Senior", "Felnőtt", "Kedvezményezett")
     drop2D_C.config(bg="#1A0933", fg="#32FBE2",
                 activebackground="#30125F", activeforeground="#32FBE2")
     drop2D_C["menu"].config(bg="#1A0933", fg="#32FBE2",
                 activebackground="#30125F", activeforeground="#32FBE2")
-    
-    
+
     
     menu2D_DB = tk.StringVar(root_foglal)
     menu2D_DB.set("0")    
@@ -83,6 +115,8 @@ def Foglal(price):
                 activebackground="#30125F", activeforeground="#32FBE2")
     
     
+    done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda:TicketCheck(price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get())))
+    
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW, ipadx=5, ipady=5, padx=10, pady=(10, 25))
     lb_text00.grid(row=1, column=0, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=(5, 25))
     lb_text01.grid(row=1, column=2, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=(5, 25))
@@ -100,7 +134,7 @@ def Foglal(price):
     drop2D_C.grid(row=3, column=5, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=10)
     drop3D_DB.grid(row=2, column=4, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=10)
     drop2D_DB.grid(row=3, column=4, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=10)
-    
+    done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW, ipadx=5, ipady=5, padx=10, pady=10)
     
     
     
