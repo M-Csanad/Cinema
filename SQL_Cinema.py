@@ -5,8 +5,7 @@ from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import random
 import os
-
-
+from PIL import Image, ImageTk
 import TestConnection 
 import CreateDatabase
 from CreateDatabase import *
@@ -145,14 +144,19 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     maxh = int(maxh)
     lp_ye = int(lp_ye)
     lp_pl = int(lp_pl)
-    
-    
+    if(lp_id == 0):
+        kep = Image.open("képek/00.png")
+        width, height = kep.size
+        kep.resize((float(width)*0.5, float(height)*0.5))
+        ujkep = ImageTk.PhotoImage(kep)
+        kep1 = tk.Label(root, image = ujkep)
+
     root_info = tk.Tk()
     style_info = ttk.Style('vapor')
     root_info.resizable(False, False)
     root_info.eval('tk::PlaceWindow . center')
     root_info.title('FilmInfo')
-    
+
     betelt = random.randint(0, maxh)
     date = lp_ye
     category = lp_ca
@@ -163,6 +167,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
         lines = [line.strip('\n') for line in f]
 
 
+    kep = Image.open()
     film_lb = tk.Label(root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
     film_date = tk.Label(root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA')
     film_desc_TXT = tk.Text(root_info, background='#1A0933', foreground='#F8F9FA')
@@ -184,7 +189,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     btn = tk.Button(root_info, text="Jegyfoglalás", bg='#1A0933', command=lambda:Foglal(price) )
 
     
-
+    kep1.grid(row=0, column=3, sticky=E, padx=5, pady=5)
     film_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
     film_date.grid(row=0, column=1, sticky=W, padx=5, pady=5)
     film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
