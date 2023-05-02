@@ -20,8 +20,18 @@ exec(open('CreateDatabase.py').read())
 
 cursor = CreateDatabase.cursor
 
+def help_terem(terem):
+    terem = int(terem)
+    print("valami")
+    return terem
 
-def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
+def Call_SignUp(terem):
+    help_terem(terem)
+    os.system('py SignUp.py')
+    
+   
+
+def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
     price = int(price)
     ticket_2D_db = int(ticket_2D_db)
     ticket_3D_db = int(ticket_3D_db)
@@ -45,16 +55,13 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
 
     else:
         ticket_countErrorCheck += 1
-        if ticket_2D == ('NONE'):
-            print("Nem válaszott 2D filmet.")
-        elif ticket_3D == ('NONE'):
-            print("Nem válaszott 3D filmet.")
+        
 
     if ticket_countErrorCheck == 3:
-        os.system('py SignUp.py')
+        Call_SignUp(terem)
 
 
-def Foglal(price):
+def Foglal(price, terem):
     root_foglal = tk.Tk()
     style = ttk.Style('vapor')
     root_foglal.resizable(False, False)
@@ -125,7 +132,7 @@ def Foglal(price):
                              activebackground="#30125F", activeforeground="#32FBE2")
 
     done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda: TicketCheck(
-        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get())))
+        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW,
                   ipadx=5, ipady=5, padx=10, pady=(10, 25))
@@ -219,7 +226,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
         root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
     btn = tk.Button(root_info, text="Jegyfoglalás",
-                    bg='#1A0933', command=lambda: Foglal(price))
+                    bg='#1A0933', command=lambda: Foglal(price, terem))
 
     kep1.pack()
     imgFrame.grid(row=0, column=5, rowspan=5, sticky=NSEW)
