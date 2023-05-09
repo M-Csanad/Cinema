@@ -44,20 +44,27 @@ def Call_SignUp(terem):
     frame_RG = tk.Frame(root_sgnUp)
     frame_LF = tk.Frame(root_sgnUp)
 
-    kNev_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar())
+    kNev_inEntry = tk.Entry(frame_LF, textvariable=StringVar())
     kNev_inEntry.insert(0, 'Keresztnév')
     kNev_inEntry.bind("<Button-1>", clickEnt_kNev)
 
-    vNev_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar())
+    vNev_inEntry = tk.Entry(frame_LF, textvariable=StringVar())
     vNev_inEntry.insert(0, 'Vezetéknév')
     vNev_inEntry.bind("<Button-1>", clickEnt_vNev)
 
-    token_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar(), foreground="#fff")
+    token_inEntry = tk.Entry(frame_LF, textvariable=StringVar(), foreground="#fff")
     token_inEntry.insert(0, f'Foglalási azonosító - {token}')
     token_inEntry.configure(state=tk.DISABLED)
 
 
 
+    #=====================
+    #   Chair Generator
+    #=====================
+
+    row_chair = range(0, 12)
+    column_chair = "ABCDEFGHIJKL"
+    x = [{itr:"0" for itr in column_chair} for y in row_chair]
 
     def Import_data():
         try:
@@ -77,8 +84,10 @@ def Call_SignUp(terem):
             print(f"-----------------{str(e)}-----------------")
 
 
-    btn_Run = tk.Button(root_sgnUp, text="Rögzítés", command=lambda: Import_data())
+    btn_Run = tk.Button(frame_LF, text="Rögzítés", command=lambda: Import_data())
 
+    frame_RG.grid(row=0, column=1, sticky=NSEW)
+    frame_LF.grid(row=0, column=0, sticky=NSEW)
 
     kNev_inEntry.grid(row=0, column=0, sticky=NSEW,
                     ipadx=5, ipady=5, padx=10, pady=10)
@@ -89,7 +98,7 @@ def Call_SignUp(terem):
     btn_Run.grid(row=2, column=0, columnspan=2, sticky=NSEW,
                 ipadx=5, ipady=5, padx=10, pady=10)
 
-
+    root_sgnUp.mainloop()
 
 
 def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
@@ -119,6 +128,7 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
 
     if ticket_countErrorCheck == 3:
         Call_SignUp(terem)
+
 
 
 def Foglal(price, terem):
@@ -230,6 +240,7 @@ def Foglal(price, terem):
     done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
                      ipadx=5, ipady=5, padx=10, pady=10)
 
+    root_foglal.mainloop()
 
 def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     terem = int(terem)
@@ -301,7 +312,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     # teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
 
     btn.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-
+    root_info.mainloop()
 
 # ---------/SQL---------
 
