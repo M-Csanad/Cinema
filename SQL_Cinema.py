@@ -201,22 +201,22 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     kep1 = tk.Label(imgFrame, image=ujkep)
 
     film_lb = tk.Label(
-        root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 15))
     film_date = tk.Label(
-        root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 14))
     film_desc_TXT = tk.Text(
-        root_info, background='#1A0933', foreground='#F8F9FA')
+        root_info, background='#1A0933', foreground='#F8F9FA',  font=("Verdana", 14))
     film_desc_TXT.insert(INSERT, f"{lines[lp_id]}")
 
     lb_TXT = film_desc_TXT.get("1.0", END)
     film_desc = Label(root_info, text=lb_TXT, background='#1A0933',
-                      foreground='#F8F9FA', wraplength=330)
+                      foreground='#F8F9FA', wraplength=330, font=("Verdana", 10))
 
     film_age = tk.Label(
-        root_info, text=f"{age}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{age}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 12))
 
     low_prio_lb = tk.Label(
-        root_info, text=f"{category} | {time}perc", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{category} | {time} perc", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 12))
 
     maxhely_lb = tk.Label(
         root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
@@ -226,7 +226,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
         root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
     btn = tk.Button(root_info, text="Jegyfoglalás",
-                    bg='#1A0933', command=lambda: Foglal(price, terem))
+                    bg='#1A0933', command=lambda: Foglal(price, terem), font=("Verdana", 11))
 
     kep1.pack()
     imgFrame.grid(row=0, column=5, rowspan=5, sticky=NSEW)

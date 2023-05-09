@@ -53,7 +53,7 @@ try:
     
     val = [
         (0, 2023, 'Krimi;Akciófilm;Thriller', 169, 2680, 18),
-        (1, 2022, 'Kalandfilm,Fantasy', 122, 2500, 12),
+        (1, 2022, 'Kalandfilm;Fantasy', 122, 2500, 12),
         (2, 2022, 'Fantasy;Sci-Fi;Akció', 192, 2100, 16),
         (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120, 2400, 12),
         (4, 2023, 'Dráma;Fikció', 117, 1850, 16),
