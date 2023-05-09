@@ -5,10 +5,9 @@ from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import secrets
 
-import CreateDatabase
-from CreateDatabase import *
-from SQL_Cinema import *
-cursor = CreateDatabase.cursor
+
+
+
 
 root = tk.Tk()
 style = ttk.Style('vapor')
@@ -46,7 +45,7 @@ token_inEntry.configure(state=tk.DISABLED)
 
 def Import_data():
     try:
-        
+
         #help_terem()
         print(help_terem())
         kNev = kNev_inEntry.get()

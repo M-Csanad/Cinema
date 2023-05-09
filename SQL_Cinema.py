@@ -4,6 +4,7 @@ import ttkbootstrap as ttk
 from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import random
+import secrets
 import os
 from PIL import Image, ImageTk
 import TestConnection
@@ -14,22 +15,82 @@ exec(open('TestConnection.py').read())
 exec(open('CreateDatabase.py').read())
 
 # Szebb verzió, ha az exec nem működik:
-#import os
-#os.system('py CreateDatabase.py')
-#os.system('py TestConnection.py')
+# import os
+# os.system('py CreateDatabase.py')
+# os.system('py TestConnection.py')
 
 cursor = CreateDatabase.cursor
 
-def help_terem(terem):
-    terem = int(terem)
-    print("valami")
-    return terem
+
 
 def Call_SignUp(terem):
-    help_terem(terem)
-    os.system('py SignUp.py')
-    
-   
+    root_sgnUp = tk.Tk()
+    style = ttk.Style('vapor')
+    root_sgnUp.resizable(False, False)
+    root_sgnUp.eval('tk::PlaceWindow . center')
+    root_sgnUp.title('SignUp')
+
+    tk.Grid.rowconfigure(root_sgnUp, 0, weight=1)
+    tk.Grid.columnconfigure(root_sgnUp, 0, weight=1)
+
+    token = secrets.token_urlsafe(6)
+
+    def clickEnt_vNev(args):
+        vNev_inEntry.delete(0, 'end')
+
+    def clickEnt_kNev(args):
+        kNev_inEntry.delete(0, 'end')
+
+    frame_RG = tk.Frame(root_sgnUp)
+    frame_LF = tk.Frame(root_sgnUp)
+
+    kNev_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar())
+    kNev_inEntry.insert(0, 'Keresztnév')
+    kNev_inEntry.bind("<Button-1>", clickEnt_kNev)
+
+    vNev_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar())
+    vNev_inEntry.insert(0, 'Vezetéknév')
+    vNev_inEntry.bind("<Button-1>", clickEnt_vNev)
+
+    token_inEntry = tk.Entry(root_sgnUp, textvariable=StringVar(), foreground="#fff")
+    token_inEntry.insert(0, f'Foglalási azonosító - {token}')
+    token_inEntry.configure(state=tk.DISABLED)
+
+
+
+
+    def Import_data():
+        try:
+            kNev = kNev_inEntry.get()
+            vNev = vNev_inEntry.get()
+            print(kNev, vNev)
+            val = [
+                (token, str(kNev), str(vNev), 150, terem)
+            ]
+
+            INSERT_Foglalasok = (
+                "INSERT INTO `foglalasok` VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE FOGLAL_SORSZAM = VALUES(FOGLAL_SORSZAM)"
+            )
+            cursor.executemany(INSERT_Foglalasok, val)
+            cursor.execute('COMMIT')
+        except Exception as e:
+            print(f"-----------------{str(e)}-----------------")
+
+
+    btn_Run = tk.Button(root_sgnUp, text="Rögzítés", command=lambda: Import_data())
+
+
+    kNev_inEntry.grid(row=0, column=0, sticky=NSEW,
+                    ipadx=5, ipady=5, padx=10, pady=10)
+    vNev_inEntry.grid(row=0, column=1, sticky=NSEW,
+                    ipadx=5, ipady=5, padx=10, pady=10)
+    token_inEntry.grid(row=1, column=0, columnspan=2, sticky=NSEW,
+                    ipadx=5, ipady=5, padx=10, pady=10)
+    btn_Run.grid(row=2, column=0, columnspan=2, sticky=NSEW,
+                ipadx=5, ipady=5, padx=10, pady=10)
+
+
+
 
 def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
     price = int(price)
@@ -55,7 +116,6 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
 
     else:
         ticket_countErrorCheck += 1
-        
 
     if ticket_countErrorCheck == 3:
         Call_SignUp(terem)
@@ -177,7 +237,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     lp_ye = int(lp_ye)
     lp_pl = int(lp_pl)
 
-    root_info = Toplevel() #a framebe beágyazott kép Toplevel segítségével jelenik csak meg
+    root_info = Toplevel()  # a framebe beágyazott kép Toplevel segítségével jelenik csak meg
     style_info = ttk.Style('vapor')
     root_info.resizable(False, False)
     root_info.title('FilmInfo')
@@ -236,12 +296,11 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
     low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     film_age.grid(row=2, column=1, sticky=W, padx=5, pady=5)
-    #maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
-    #szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-    #teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
+    # maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+    # szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+    # teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
 
     btn.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-    root_info.mainloop()
 
 
 # ---------/SQL---------
