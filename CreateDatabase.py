@@ -34,8 +34,8 @@ try:
     #cursor.execute(
     #    "SET GLOBAL FOREIGN_KEY_CHECKS=0"
     #)
-    
-    # ======= LowPrio ======= 
+
+    # ======= LowPrio =======
 
     TABLE_LowPrio = (
         '''CREATE TABLE IF NOT EXISTS Low_Prio (
@@ -45,19 +45,19 @@ try:
     PLAYTIME CHAR(3) NOT NULL,
     PRICE VARCHAR(4) NOT NULL,
     AGE CHAR(2) NOT NULL)
-    '''    
+    '''
     )
 
     cursor.execute(TABLE_LowPrio)
-    
-    
+
+
     val = [
         (0, 2023, 'Krimi;Akciófilm;Thriller', 169, 2680, 18),
-        (1, 2022, 'Kalandfilm,Fantasy', 122, 2500, 12),
+        (1, 2022, 'Kalandfilm;Fantasy', 122, 2500, 12),
         (2, 2022, 'Fantasy;Sci-Fi;Akció', 192, 2100, 16),
         (3, 2023, 'Akció;Kalandfilm;Vígjáték;Sci-Fi', 120, 2400, 12),
         (4, 2023, 'Dráma;Fikció', 117, 1850, 16),
-        (5, 2023, 'Akció;Kalandfilm', 134, 1850, 12)     
+        (5, 2023, 'Akció;Kalandfilm', 134, 1850, 12)
     ]
 
     INSERT_LowPrio = (
@@ -68,20 +68,20 @@ try:
 
 
 
-    # ======= Termek ======= 
+    # ======= Termek =======
 
     TABLE_Termek = (
         '''CREATE TABLE IF NOT EXISTS Termek (
     TEREM_SZAM INT NOT NULL PRIMARY KEY,
     TEREM_FILM TEXT(50) NOT NULL,
-    TEREM_MAXHELY CHAR(3) NOT NULL, 
-    LOW_PRIO INT NOT NULL, 
-     
+    TEREM_MAXHELY CHAR(3) NOT NULL,
+    LOW_PRIO INT NOT NULL,
+
     FOREIGN KEY (LOW_PRIO) REFERENCES Low_Prio(LP_ID))'''
     )  # Amikor egy TABLE-t szeretnénk létrehozni, az adattípust kötelező megadni a hosszával együtt!!
 
     cursor.execute(TABLE_Termek)
-    
+
     val = [
         (1, 'John Wick: 4. felvonás', 250, 0),
         (2, 'Suzume',  150, 1),
@@ -99,21 +99,21 @@ try:
 
 
 
-    # ======= Foglalasok ======= 
+    # ======= Foglalasok =======
 
     TABLE_Foglalasok = (
         '''CREATE TABLE IF NOT EXISTS Foglalasok (
-    FOGLAL_SORSZAM CHAR(12) NOT NULL PRIMARY KEY,
+    FOGLAL_SORSZAM VARCHAR(12) NOT NULL PRIMARY KEY,
     KERESZTNEV TEXT(25) NOT NULL,
     VEZETEKNEV TEXT(25) NOT NULL,
     SZEKSZAM VARCHAR(50) NOT NULL,
     TEREMSZAM INT NOT NULL,
-    
+
     FOREIGN KEY (TEREMSZAM) REFERENCES Termek(TEREM_SZAM))'''
     )
     cursor.execute(TABLE_Foglalasok)
 
-    
+
     #Activate Foreign_Key_Checks
     #cursor.execute(
     #    "SET FOREIGN_KEY_CHECKS=1"

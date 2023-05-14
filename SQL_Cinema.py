@@ -21,6 +21,10 @@ exec(open('CreateDatabase.py').read())
 
 cursor = CreateDatabase.cursor
 
+def help_terem(terem):
+    terem = int(terem)
+    print("valami")
+    return terem
 
 def Call_SignUp(terem):
     root_sgnUp = tk.Tk()
