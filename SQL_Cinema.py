@@ -4,6 +4,7 @@ import ttkbootstrap as ttk
 from tkinter.ttk import *
 from ttkbootstrap.constants import *
 import random
+import secrets
 import os
 from PIL import Image, ImageTk
 import TestConnection
@@ -14,14 +15,128 @@ exec(open('TestConnection.py').read())
 exec(open('CreateDatabase.py').read())
 
 # Szebb verzió, ha az exec nem működik:
-#import os
-#os.system('py CreateDatabase.py')
-#os.system('py TestConnection.py')
+# import os
+# os.system('py CreateDatabase.py')
+# os.system('py TestConnection.py')
 
 cursor = CreateDatabase.cursor
 
 
-def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
+def Call_SignUp(terem):
+    root_sgnUp = tk.Tk()
+    style = ttk.Style('vapor')
+    root_sgnUp.resizable(False, False)
+    root_sgnUp.eval('tk::PlaceWindow . center')
+    root_sgnUp.title('SignUp')
+
+    tk.Grid.rowconfigure(root_sgnUp, 0, weight=1)
+    tk.Grid.columnconfigure(root_sgnUp, 0, weight=1)
+    frame_RG = tk.Frame(root_sgnUp)
+    frame_LF = tk.Frame(root_sgnUp)
+
+
+
+
+
+    def clickResetColor(id):
+        button_dict[id].config(background='#03C988', foreground='#F8F9FA', command=lambda: (clickColor(id)))
+    def clickColor(id):
+        print(button_dict[id].cget('text'))
+        button_dict[id].config(background='#F7C04A', foreground='#000', command=lambda:(clickResetColor(id)))
+
+    row_chair = range(1, 13)
+    column_chair = "ABCDEFGHIJ"
+    option = [{str(index)+itr: "0" for itr in column_chair}
+              for index in row_chair]
+
+    button_dict = {}
+    rowIndex = 0
+    columnIndex = 0
+
+    index = 1
+    for x in option:
+        for i in x:
+            betelt = random.randint(0, 10)
+            button_dict[i] = tk.Button(
+                frame_RG, text=i, command=lambda x=i: (clickColor(x)))
+            button_dict[i].config(background='#03C988', foreground='#F8F9FA')
+            if (index <= (len(column_chair))):
+                button_dict[i].grid(row=rowIndex, column=columnIndex,
+                                    sticky=NSEW, ipadx=5, ipady=2, pady=5, padx=5)
+                if((betelt == 1) or (betelt == 5)):
+                    button_dict[i].config(background='#DC0000', disabledforeground='#FFF')
+                    button_dict[i]['state'] = DISABLED
+            else:
+                index = 1
+                columnIndex = 0
+                rowIndex += 1
+                button_dict[i].grid(row=rowIndex, column=columnIndex,
+                                    sticky=NSEW, ipadx=5, ipady=2, pady=5, padx=5)
+
+            columnIndex += 1
+            index += 1
+
+    token = secrets.token_urlsafe(6)
+
+    def clickEnt_vNev(args):
+        vNev_inEntry.delete(0, 'end')
+
+    def clickEnt_kNev(args):
+        kNev_inEntry.delete(0, 'end')
+
+    kNev_inEntry = tk.Entry(frame_LF, textvariable=StringVar())
+    kNev_inEntry.insert(0, 'Keresztnév')
+    kNev_inEntry.bind("<Button-1>", clickEnt_kNev)
+
+    vNev_inEntry = tk.Entry(frame_LF, textvariable=StringVar())
+    vNev_inEntry.insert(0, 'Vezetéknév')
+    vNev_inEntry.bind("<Button-1>", clickEnt_vNev)
+
+    token_inEntry = tk.Entry(
+        frame_LF, textvariable=StringVar(), foreground="#fff")
+    token_inEntry.insert(0, f'Foglalási azonosító - {token}')
+    token_inEntry.configure(state=tk.DISABLED)
+
+    # =====================
+    #   Chair Generator
+    # =====================
+
+    def Import_data():
+        try:
+            kNev = kNev_inEntry.get()
+            vNev = vNev_inEntry.get()
+
+            val = [
+                (token, str(kNev), str(vNev), 150, terem)
+            ]
+
+            INSERT_Foglalasok = (
+                "INSERT INTO `foglalasok` VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE FOGLAL_SORSZAM = VALUES(FOGLAL_SORSZAM)"
+            )
+            cursor.executemany(INSERT_Foglalasok, val)
+            cursor.execute('COMMIT')
+        except Exception as e:
+            print(f"-----------------{str(e)}-----------------")
+
+    btn_Run = tk.Button(frame_LF, text="Rögzítés", command=lambda: (
+        Import_data(), root_sgnUp.destroy()))
+
+    frame_RG.grid(row=0, column=1, sticky=NSEW)
+    frame_LF.grid(row=0, column=0, sticky=NSEW)
+
+    kNev_inEntry.grid(row=0, column=0, sticky=NSEW,
+                      ipadx=5, ipady=5, padx=10, pady=10)
+    vNev_inEntry.grid(row=0, column=1, sticky=NSEW,
+                      ipadx=5, ipady=5, padx=10, pady=10)
+    token_inEntry.grid(row=1, column=0, columnspan=2, sticky=NSEW,
+                       ipadx=5, ipady=5, padx=10, pady=10)
+    btn_Run.grid(row=2, column=0, columnspan=2, sticky=NSEW,
+                 ipadx=5, ipady=5, padx=10, pady=10)
+
+    root_sgnUp.mainloop()
+
+
+def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
     price = int(price)
     ticket_2D_db = int(ticket_2D_db)
     ticket_3D_db = int(ticket_3D_db)
@@ -45,16 +160,12 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
 
     else:
         ticket_countErrorCheck += 1
-        if ticket_2D == ('NONE'):
-            print("Nem válaszott 2D filmet.")
-        elif ticket_3D == ('NONE'):
-            print("Nem válaszott 3D filmet.")
 
     if ticket_countErrorCheck == 3:
-        os.system('py SignUp.py')
+        Call_SignUp(terem)
 
 
-def Foglal(price):
+def Foglal(price, terem):
     root_foglal = tk.Tk()
     style = ttk.Style('vapor')
     root_foglal.resizable(False, False)
@@ -125,7 +236,7 @@ def Foglal(price):
                              activebackground="#30125F", activeforeground="#32FBE2")
 
     done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda: TicketCheck(
-        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get())))
+        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW,
                   ipadx=5, ipady=5, padx=10, pady=(10, 25))
@@ -163,6 +274,8 @@ def Foglal(price):
     done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
                      ipadx=5, ipady=5, padx=10, pady=10)
 
+    root_foglal.mainloop()
+
 
 def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     terem = int(terem)
@@ -170,7 +283,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     lp_ye = int(lp_ye)
     lp_pl = int(lp_pl)
 
-    root_info = Toplevel() #a framebe beágyazott kép Toplevel segítségével jelenik csak meg
+    root_info = Toplevel()  # a framebe beágyazott kép Toplevel segítségével jelenik csak meg
     style_info = ttk.Style('vapor')
     root_info.resizable(False, False)
     root_info.title('FilmInfo')
@@ -219,7 +332,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
         root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
     btn = tk.Button(root_info, text="Jegyfoglalás",
-                    bg='#1A0933', command=lambda: Foglal(price))
+                    bg='#1A0933', command=lambda: Foglal(price, terem))
 
     kep1.pack()
     imgFrame.grid(row=0, column=5, rowspan=5, sticky=NSEW)
@@ -229,15 +342,15 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
     low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     film_age.grid(row=2, column=1, sticky=W, padx=5, pady=5)
-    #maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
-    #szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
-    #teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
+    # maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
+    # szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+    # teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
 
     btn.grid(row=3, column=0, sticky=W, padx=5, pady=5)
     root_info.mainloop()
 
-
 # ---------/SQL---------
+
 
 root = tk.Tk()
 style = ttk.Style('vapor')
