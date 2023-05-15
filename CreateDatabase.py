@@ -83,12 +83,12 @@ try:
     cursor.execute(TABLE_Termek)
 
     val = [
-        (1, 'John Wick: 4. felvonás', 250, 0),
+        (1, 'John Wick: 4. felvonás', 120, 0),
         (2, 'Suzume',  150, 1),
         (3, 'Avatar',  150, 2),
-        (4, 'A galaxis őrzői: 3. rész', 250, 3),
+        (4, 'A galaxis őrzői: 3. rész', 120, 3),
         (5, 'A bálna',  100, 4),
-        (6, 'Dungeons and Dragons: Betyárbecsület', 250, 5)
+        (6, 'Dungeons and Dragons: Betyárbecsület', 120, 5)
     ]
 
     INSERT_Termek = (
