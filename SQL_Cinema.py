@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import *
+from tkinter import messagebox
 import ttkbootstrap as ttk
 from tkinter.ttk import *
 from ttkbootstrap.constants import *
@@ -23,7 +24,14 @@ cursor = CreateDatabase.cursor
 
 
 
-def Call_SignUp(terem):
+#==========================#
+#   SignUp - Chair generator
+#==========================#
+
+def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
+    global betelt, maxhely
+    print(betelt, maxhely)
+
     root_sgnUp = tk.Tk()
     style = ttk.Style('vapor')
     root_sgnUp.resizable(False, False)
@@ -32,6 +40,93 @@ def Call_SignUp(terem):
 
     tk.Grid.rowconfigure(root_sgnUp, 0, weight=1)
     tk.Grid.columnconfigure(root_sgnUp, 0, weight=1)
+    frame_RG = tk.Frame(root_sgnUp)
+    frame_LF = tk.Frame(root_sgnUp)
+
+    global ticket_chairCount
+    def clickResetColor(id):
+        global ticket_chairCount
+        ticket_chairCount -= 1
+        button_dict[id].config(background='#03C988', foreground='#F8F9FA', command=lambda: (clickColor(id)))
+    def clickColor(id):
+        global ticket_chairCount
+        if ((ticket_chairCount >= ticket_2D_db) and (ticket_2D != "NONE")):
+            tk.messagebox.showerror(title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
+        if((ticket_chairCount >= ticket_3D_db) and (ticket_3D != "NONE")):
+            tk.messagebox.showerror(title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
+
+        if ((ticket_chairCount <= ticket_2D_db-1) and (ticket_2D != "NONE")):
+            button_dict[id].config(background='#F7C04A', foreground='#000', command=lambda:(clickResetColor(id)))
+            ticket_chairCount += 1
+            print(ticket_chairCount)
+        if ((ticket_chairCount <= ticket_3D_db-1) and (ticket_3D != "NONE")):
+            button_dict[id].config(background='#F7C04A', foreground='#000', command=lambda:(clickResetColor(id)))
+            ticket_chairCount += 1
+
+#==========================#
+#   SignUp - THE Generator
+#==========================#
+
+    if (maxhely == 150):
+        row_chair = range(1, 16)
+        column_chair = "ABCDEFGHIJ"
+    if (maxhely == 120):
+        row_chair = range(1, 16)
+        column_chair = "ABCDEFGH"
+    if (maxhely == 100):
+        row_chair = range(1, 6)
+        column_chair = "ABCDEFGHIJKLMNOPQRST"
+
+    option = [{str(index)+itr: "0" for itr in column_chair}
+              for index in row_chair]
+
+    button_dict = {}
+    rowIndex = 0
+    columnIndex = 0
+    ticket_chairCount = 0
+    index = 1
+    for x in option:
+        for i in x:
+            button_dict[i] = tk.Button(
+                frame_RG, text=i, command=lambda x=i: (clickColor(x)))
+            button_dict[i].config(background='#03C988', foreground='#F8F9FA')
+            if (index <= (len(column_chair))):
+                button_dict[i].grid(row=rowIndex, column=columnIndex,
+                                    sticky=NSEW, ipadx=5, ipady=2, pady=5, padx=5)
+            else:
+                index = 1
+                columnIndex = 0
+                rowIndex += 1
+                button_dict[i].grid(row=rowIndex, column=columnIndex,
+                                    sticky=NSEW, ipadx=5, ipady=2, pady=5, padx=5)
+            columnIndex += 1
+            index += 1
+
+    betelt_count = 0
+    index = 0
+    while ((betelt-1 >= betelt_count)):
+        print(f"Betelt: {betelt}\nSzámláló: {betelt_count}")
+        for i in button_dict:
+            rand = random.randint(1,3)
+            if((betelt-1 >= betelt_count) and (rand == 2)):
+                if(button_dict[i]['state'] != DISABLED):
+                    button_dict[i].config(background='#DC0000', disabledforeground='#FFF')
+                    button_dict[i]['state'] = DISABLED
+                    betelt_count += 1
+                else:
+                    betelt_count = betelt_count
+            index += 1
+            if (index == len(button_dict)-1):
+                print("\nbetelt_szamlalo: " + str(betelt_count))
+                print("i: " + str(index))
+                index = 0
+        betelt_count = betelt_count
+
+
+
+#==========================#
+#   SignUp - User Info
+#==========================#
 
     token = secrets.token_urlsafe(6)
 
@@ -41,9 +136,6 @@ def Call_SignUp(terem):
     def clickEnt_kNev(args):
         kNev_inEntry.delete(0, 'end')
 
-    frame_RG = tk.Frame(root_sgnUp)
-    frame_LF = tk.Frame(root_sgnUp)
-
     kNev_inEntry = tk.Entry(frame_LF, textvariable=StringVar())
     kNev_inEntry.insert(0, 'Keresztnév')
     kNev_inEntry.bind("<Button-1>", clickEnt_kNev)
@@ -52,54 +144,71 @@ def Call_SignUp(terem):
     vNev_inEntry.insert(0, 'Vezetéknév')
     vNev_inEntry.bind("<Button-1>", clickEnt_vNev)
 
-    token_inEntry = tk.Entry(frame_LF, textvariable=StringVar(), foreground="#fff")
+    token_inEntry = tk.Entry(
+        frame_LF, textvariable=StringVar(), foreground="#fff")
     token_inEntry.insert(0, f'Foglalási azonosító - {token}')
     token_inEntry.configure(state=tk.DISABLED)
 
 
 
-    #=====================
-    #   Chair Generator
-    #=====================
-
-    row_chair = range(0, 12)
-    column_chair = "ABCDEFGHIJKL"
-    x = [{itr:"0" for itr in column_chair} for y in row_chair]
+#==========================#
+#   SignUp - Import SQL
+#==========================#
 
     def Import_data():
         try:
-            kNev = kNev_inEntry.get()
-            vNev = vNev_inEntry.get()
-            print(kNev, vNev)
-            val = [
-                (token, str(kNev), str(vNev), 150, terem)
-            ]
+            ticket_chair = []
+            for i in button_dict:
+                if(button_dict[i].cget('bg') == "#F7C04A"):
+                    ticket_chair.append(button_dict[i].cget('text'))
+            print(len(ticket_chair), ticket_2D_db)
+            if (len(ticket_chair) < ticket_2D_db):
+                tk.messagebox.showinfo(title="", message="Kevesebb széket jelölt be, mint ahány jegyet kért")
+            if (len(ticket_chair) == ticket_2D_db):
+                kNev = kNev_inEntry.get()
+                vNev = vNev_inEntry.get()
+                val = [
+                    (token, str(kNev), str(vNev), str(ticket_chair), terem)
+                ]
 
-            INSERT_Foglalasok = (
-                "INSERT INTO `foglalasok` VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE FOGLAL_SORSZAM = VALUES(FOGLAL_SORSZAM)"
-            )
-            cursor.executemany(INSERT_Foglalasok, val)
-            cursor.execute('COMMIT')
+                INSERT_Foglalasok = (
+                    "INSERT INTO `foglalasok` VALUES (%s,%s,%s,%s,%s) ON DUPLICATE KEY UPDATE FOGLAL_SORSZAM = VALUES(FOGLAL_SORSZAM)"
+                )
+                cursor.executemany(INSERT_Foglalasok, val)
+                cursor.execute('COMMIT')
+                root_sgnUp.destroy()
         except Exception as e:
             print(f"-----------------{str(e)}-----------------")
 
+    btn_Run = tk.Button(frame_LF, text="Rögzítés", command=lambda: (
+        Import_data()))
 
-    btn_Run = tk.Button(frame_LF, text="Rögzítés", command=lambda: Import_data())
+    frame_RG.grid(row=0, column=1, sticky=EW)
+    frame_LF.grid(row=0, column=0, sticky=EW)
 
-    frame_RG.grid(row=0, column=1, sticky=NSEW)
-    frame_LF.grid(row=0, column=0, sticky=NSEW)
+    frame_LF.grid_rowconfigure(0, weight=1)
 
     kNev_inEntry.grid(row=0, column=0, sticky=NSEW,
-                    ipadx=5, ipady=5, padx=10, pady=10)
+                      ipadx=5, ipady=5, padx=10, pady=10)
     vNev_inEntry.grid(row=0, column=1, sticky=NSEW,
-                    ipadx=5, ipady=5, padx=10, pady=10)
+                      ipadx=5, ipady=5, padx=10, pady=10)
     token_inEntry.grid(row=1, column=0, columnspan=2, sticky=NSEW,
-                    ipadx=5, ipady=5, padx=10, pady=10)
+                       ipadx=5, ipady=5, padx=10, pady=10)
     btn_Run.grid(row=2, column=0, columnspan=2, sticky=NSEW,
-                ipadx=5, ipady=5, padx=10, pady=10)
+                 ipadx=5, ipady=5, padx=10, pady=10)
+
+    kNev_inEntry.grid_rowconfigure(1, weight=1)
+    vNev_inEntry.grid_rowconfigure(1, weight=1)
+    token_inEntry.grid_rowconfigure(1, weight=1)
+    btn_Run.grid_rowconfigure(1, weight=1)
 
     root_sgnUp.mainloop()
 
+
+
+#==========================#
+#   Ticket - Error Check
+#==========================#
 
 def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
     price = int(price)
@@ -127,11 +236,17 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
         ticket_countErrorCheck += 1
 
     if ticket_countErrorCheck == 3:
-        Call_SignUp(terem)
+
+        Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db)
 
 
+
+#==========================#
+#   Booking - Graphics
+#==========================#
 
 def Foglal(price, terem):
+
     root_foglal = tk.Tk()
     style = ttk.Style('vapor')
     root_foglal.resizable(False, False)
@@ -204,6 +319,7 @@ def Foglal(price, terem):
     done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda: TicketCheck(
         price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
+
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW,
                   ipadx=5, ipady=5, padx=10, pady=(10, 25))
     lb_text00.grid(row=1, column=0, sticky=NSEW, ipadx=5,
@@ -242,11 +358,19 @@ def Foglal(price, terem):
 
     root_foglal.mainloop()
 
+
+
+#==========================#
+#   Movie Info - Info
+#==========================#
+
 def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
+    global betelt, maxhely
     terem = int(terem)
     maxh = int(maxh)
     lp_ye = int(lp_ye)
     lp_pl = int(lp_pl)
+    maxhely = maxh
 
     root_info = Toplevel()  # a framebe beágyazott kép Toplevel segítségével jelenik csak meg
     style_info = ttk.Style('vapor')
@@ -265,8 +389,8 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
 
     kep = Image.open(f"képek/0{lp_id}.png")
     width, height = kep.size
-    weightSM = (int(width/1.55))
-    heightSm = (int(height/1.55))
+    weightSM = (int(width/1.2))
+    heightSm = (int(height/1.2))
     kepSize = kep.resize((weightSM, heightSm))
     ujkep = ImageTk.PhotoImage(kepSize)
     kep1 = tk.Label(imgFrame, image=ujkep)
@@ -292,7 +416,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     maxhely_lb = tk.Label(
         root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
     szabad_lb = tk.Label(
-        root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"Szabad ülőhelyek száma: {maxh}/{maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
     teremszam_lb = tk.Label(
         root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
@@ -307,14 +431,20 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
     low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     film_age.grid(row=2, column=1, sticky=W, padx=5, pady=5)
+    szabad_lb.grid(row=3, column=1, sticky=W, padx=5, pady=5)
     # maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     # szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
     # teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
 
-    btn.grid(row=3, column=0, sticky=W, padx=5, pady=5)
+    btn.grid(row=3, column=0, sticky=EW, padx=5, pady=5, ipadx=10, ipady=10)
+
     root_info.mainloop()
 
-# ---------/SQL---------
+
+
+#==========================#
+#   Basic Menu - Start Panel
+#==========================#
 
 root = tk.Tk()
 style = ttk.Style('vapor')
