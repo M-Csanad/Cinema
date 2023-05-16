@@ -28,7 +28,7 @@ def help_terem(terem):
 def Call_SignUp(terem):
     help_terem(terem)
     os.system('py SignUp.py')
-    
+
    
 
 def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
@@ -251,6 +251,7 @@ style = ttk.Style('vapor')
 root.resizable(False, False)
 root.eval('tk::PlaceWindow . center')
 root.title('Cinema')
+imgFrame = tk.Frame(root)
 
 tk.Grid.rowconfigure(root, 0, weight=1)
 tk.Grid.columnconfigure(root, 0, weight=1)
@@ -281,6 +282,8 @@ for data in (cursor.fetchall()):
     LP_age_lst.append(data[8])
 
 
+
+
 btn01 = Button(root, text=film_lst[0], style=LIGHT, command=lambda: Info(
     teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0], LP_price_lst[0], LP_ID[0], LP_age_lst[0]))
 
@@ -300,12 +303,17 @@ btn06 = Button(root, text=film_lst[5], style=LIGHT, command=lambda: Info(
     teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5], LP_price_lst[5], LP_ID[5], LP_age_lst[5]))
 
 
-btn01.grid(row=0, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
-btn02.grid(row=0, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
-btn03.grid(row=0, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
-btn04.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
-btn05.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
-btn06.grid(row=1, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+btn01.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn02.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn03.grid(row=1, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn04.grid(row=3, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn05.grid(row=3, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn06.grid(row=3, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 
 
 root.mainloop()
