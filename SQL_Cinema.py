@@ -8,6 +8,9 @@ import random
 import secrets
 import os
 from PIL import Image, ImageTk
+from fpdf import FPDF
+
+
 import TestConnection
 import CreateDatabase
 from CreateDatabase import *
@@ -150,6 +153,25 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
     token_inEntry.configure(state=tk.DISABLED)
 
 
+#==========================#
+#   SignUp - PDF Creator
+#==========================#
+
+    def pdfCreator():
+        try:
+            fpdf = FPDF(orientation = 'P', unit = 'mm', format='A4')
+            fpdf.add_page()
+            fpdf.set_font("helvica", style = 'BUI', size = 15)
+            fpdf.cell(150, h = 150, txt = 'Valami', ln = 0)
+            fpdf.output(name = 'foglalas', dest = '')
+
+        except Exception as e:
+            print(f"-----------------{str(e)}-----------------")
+
+
+
+
+
 
 #==========================#
 #   SignUp - Import SQL
@@ -177,6 +199,10 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
                 cursor.executemany(INSERT_Foglalasok, val)
                 cursor.execute('COMMIT')
                 root_sgnUp.destroy()
+                tk.messagebox.showinfo(title="Sikeres foglalás", message="Foglalását rögzítettük, várjuk szeretettel.")
+
+                pdfCreator()
+
         except Exception as e:
             print(f"-----------------{str(e)}-----------------")
 
@@ -333,24 +359,19 @@ def Foglal(price, terem):
     lb_text04.grid(row=1, column=5, sticky=NSEW, ipadx=5,
                    ipady=5, padx=10, pady=(5, 25))
 
-    lb_time3D.grid(row=2, column=0, sticky=NSEW,
-                   ipadx=5, ipady=5, padx=10, pady=10)
+
     lb_time2D.grid(row=3, column=0, sticky=NSEW,
                    ipadx=5, ipady=5, padx=10, pady=10)
-    lb_3D.grid(row=2, column=2, sticky=NSEW,
-               ipadx=5, ipady=5, padx=10, pady=10)
+
     lb_2D.grid(row=3, column=2, sticky=NSEW,
                ipadx=5, ipady=5, padx=10, pady=10)
-    lb_price3D.grid(row=2, column=3, sticky=NSEW,
-                    ipadx=5, ipady=5, padx=10, pady=10)
+
     lb_price2D.grid(row=3, column=3, sticky=NSEW,
                     ipadx=5, ipady=5, padx=10, pady=10)
-    drop3D_C.grid(row=2, column=5, sticky=NSEW,
-                  ipadx=5, ipady=5, padx=10, pady=10)
+
     drop2D_C.grid(row=3, column=5, sticky=NSEW,
                   ipadx=5, ipady=5, padx=10, pady=10)
-    drop3D_DB.grid(row=2, column=4, sticky=NSEW,
-                   ipadx=5, ipady=5, padx=10, pady=10)
+
     drop2D_DB.grid(row=3, column=4, sticky=NSEW,
                    ipadx=5, ipady=5, padx=10, pady=10)
     done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
