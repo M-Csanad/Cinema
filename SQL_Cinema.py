@@ -12,6 +12,7 @@ import TestConnection
 import CreateDatabase
 from CreateDatabase import *
 
+
 exec(open('TestConnection.py').read())
 exec(open('CreateDatabase.py').read())
 
@@ -395,34 +396,34 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     ujkep = ImageTk.PhotoImage(kepSize)
     kep1 = tk.Label(imgFrame, image=ujkep)
 
+
     film_lb = tk.Label(
-        root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 15))
     film_date = tk.Label(
-        root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{date}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 14))
     film_desc_TXT = tk.Text(
-        root_info, background='#1A0933', foreground='#F8F9FA')
+        root_info, background='#1A0933', foreground='#F8F9FA',  font=("Verdana", 14))
     film_desc_TXT.insert(INSERT, f"{lines[lp_id]}")
 
     lb_TXT = film_desc_TXT.get("1.0", END)
     film_desc = Label(root_info, text=lb_TXT, background='#1A0933',
-                      foreground='#F8F9FA', wraplength=330)
+                      foreground='#F8F9FA', wraplength=330, font=("Verdana", 10))
 
     film_age = tk.Label(
-        root_info, text=f"{age}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{age}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 12))
 
     low_prio_lb = tk.Label(
-        root_info, text=f"{category} | {time}perc", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"{category} | {time} perc", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 12))
 
     maxhely_lb = tk.Label(
         root_info, text=f"Összes ülőhelyek száma: {maxh}", background='#1A0933', foreground='#F8F9FA')
     szabad_lb = tk.Label(
-        root_info, text=f"Szabad ülőhelyek száma: {maxh}/{maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
+        root_info, text=f"Szabad ülőhelyek száma: {maxh-betelt}", background='#1A0933', foreground='#F8F9FA')
     teremszam_lb = tk.Label(
         root_info, text=f"Teremszám: {terem}", background='#1A0933', foreground='#F8F9FA')
 
     btn = tk.Button(root_info, text="Jegyfoglalás",
-                    bg='#1A0933', command=lambda: Foglal(price, terem))
-
+                    bg='#1A0933', command=lambda: Foglal(price, terem), font=("Verdana", 11))
     kep1.pack()
     imgFrame.grid(row=0, column=5, rowspan=5, sticky=NSEW)
 
@@ -480,23 +481,24 @@ for data in (cursor.fetchall()):
     LP_ID.append(data[7])
     LP_age_lst.append(data[8])
 
-
-btn01 = Button(root, text=film_lst[0], style=LIGHT, command=lambda: Info(
+s = ttk.Style()
+s.configure('my.TButton', font=('Helvetica', 20),  background='#1A0933')
+btn01 = ttk.Button(root,  text=film_lst[0], style='my.TButton', command=lambda: Info(
     teremszam_lst[0], film_lst[0], maxhely_lst[0], LP_year_lst[0], LP_category_lst[0], LP_playtime_lst[0], LP_price_lst[0], LP_ID[0], LP_age_lst[0]))
 
-btn02 = Button(root, text=film_lst[1], style=LIGHT, command=lambda: Info(
+btn02 = Button(root, text=film_lst[1], style='my.TButton', command=lambda: Info(
     teremszam_lst[1], film_lst[1], maxhely_lst[1], LP_year_lst[1], LP_category_lst[1], LP_playtime_lst[1], LP_price_lst[1], LP_ID[1], LP_age_lst[1]))
 
-btn03 = Button(root, text=film_lst[2], style=LIGHT, command=lambda: Info(
+btn03 = Button(root, text=film_lst[2], style='my.TButton', command=lambda: Info(
     teremszam_lst[2], film_lst[2], maxhely_lst[2], LP_year_lst[2], LP_category_lst[2], LP_playtime_lst[2], LP_price_lst[2], LP_ID[2], LP_age_lst[2]))
 
-btn04 = Button(root, text=film_lst[3], style=LIGHT, command=lambda: Info(
+btn04 = Button(root, text=film_lst[3], style='my.TButton', command=lambda: Info(
     teremszam_lst[3], film_lst[3], maxhely_lst[3], LP_year_lst[3], LP_category_lst[3], LP_playtime_lst[3], LP_price_lst[3], LP_ID[3], LP_age_lst[3]))
 
-btn05 = Button(root, text=film_lst[4], style=LIGHT, command=lambda: Info(
+btn05 = Button(root, text=film_lst[4], style='my.TButton', command=lambda: Info(
     teremszam_lst[4], film_lst[4], maxhely_lst[4], LP_year_lst[4], LP_category_lst[4], LP_playtime_lst[4], LP_price_lst[4], LP_ID[4], LP_age_lst[4]))
 
-btn06 = Button(root, text=film_lst[5], style=LIGHT, command=lambda: Info(
+btn06 = Button(root, text=film_lst[5], style='my.TButton', command=lambda: Info(
     teremszam_lst[5], film_lst[5], maxhely_lst[5], LP_year_lst[5], LP_category_lst[5], LP_playtime_lst[5], LP_price_lst[5], LP_ID[5], LP_age_lst[5]))
 
 
