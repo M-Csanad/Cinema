@@ -433,9 +433,6 @@ def Foglal(price, terem):
     drop3D_DB["menu"].config(bg="#1A0933", fg="#32FBE2",
                              activebackground="#30125F", activeforeground="#32FBE2")
 
-    more_ticket = tk.Button(root_foglal, text="MÉG KÉREK JEGYET", anchor=CENTER, command=lambda: TicketCheck(
-        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
-
     done_ticket = tk.Button(root_foglal, text="LEFOGLALÁS", anchor=CENTER, command=lambda: TicketCheck(
         price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
@@ -467,9 +464,8 @@ def Foglal(price, terem):
     drop2D_DB.grid(row=3, column=4, sticky=NSEW,
                    ipadx=5, ipady=5, padx=10, pady=10)
 
-    more_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
-                     ipadx=5, ipady=5, padx=10, pady=10)
-    done_ticket.grid(row=5, column=0, columnspan=6, sticky=NSEW,
+
+    done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
                      ipadx=5, ipady=5, padx=10, pady=10)
 
     root_foglal.mainloop()
@@ -542,15 +538,15 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
 
     myMeter = ttk.Meter(
     root_info,
-    textfont=['Times',25,'bold'],
+    textfont=['Times',20,'bold'],
     amountused=(maxh-betelt),
     amounttotal=maxh,
-    metersize=150,
+    metersize=120,
     meterthickness=5,
     stripethickness=12,
     bootstyle=SUCCESS,
     subtext='szabad hely',
-    subtextfont=['Times',10,'normal'],
+    subtextfont=['Times',9,'normal'],
     subtextstyle=SECONDARY
 
 )
