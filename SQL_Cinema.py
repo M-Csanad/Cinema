@@ -27,13 +27,12 @@ exec(open('CreateDatabase.py').read())
 cursor = CreateDatabase.cursor
 
 
-
-#==========================#
+# ==========================#
 #   SignUp - Chair generator
-#==========================#
+# ==========================#
 
 def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
-    global betelt, maxhely
+    global betelt, maxhely, movie, time
     print(betelt, maxhely)
 
     root_sgnUp = tk.Tk()
@@ -48,28 +47,35 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
     frame_LF = tk.Frame(root_sgnUp)
 
     global ticket_chairCount
+
     def clickResetColor(id):
         global ticket_chairCount
         ticket_chairCount -= 1
-        button_dict[id].config(background='#03C988', foreground='#F8F9FA', command=lambda: (clickColor(id)))
+        button_dict[id].config(
+            background='#03C988', foreground='#F8F9FA', command=lambda: (clickColor(id)))
+
     def clickColor(id):
         global ticket_chairCount
         if ((ticket_chairCount >= ticket_2D_db) and (ticket_2D != "NONE")):
-            tk.messagebox.showerror(title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
-        if((ticket_chairCount >= ticket_3D_db) and (ticket_3D != "NONE")):
-            tk.messagebox.showerror(title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
+            tk.messagebox.showerror(
+                title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
+        if ((ticket_chairCount >= ticket_3D_db) and (ticket_3D != "NONE")):
+            tk.messagebox.showerror(
+                title="Error", message="Több széket nem jelölhet, mint amennyi jegyet kért")
 
         if ((ticket_chairCount <= ticket_2D_db-1) and (ticket_2D != "NONE")):
-            button_dict[id].config(background='#F7C04A', foreground='#000', command=lambda:(clickResetColor(id)))
+            button_dict[id].config(
+                background='#F7C04A', foreground='#000', command=lambda: (clickResetColor(id)))
             ticket_chairCount += 1
             print(ticket_chairCount)
         if ((ticket_chairCount <= ticket_3D_db-1) and (ticket_3D != "NONE")):
-            button_dict[id].config(background='#F7C04A', foreground='#000', command=lambda:(clickResetColor(id)))
+            button_dict[id].config(
+                background='#F7C04A', foreground='#000', command=lambda: (clickResetColor(id)))
             ticket_chairCount += 1
 
-#==========================#
+# ==========================#
 #   SignUp - THE Generator
-#==========================#
+# ==========================#
 
     if (maxhely == 150):
         row_chair = range(1, 16)
@@ -111,10 +117,11 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
     while ((betelt-1 >= betelt_count)):
         print(f"Betelt: {betelt}\nSzámláló: {betelt_count}")
         for i in button_dict:
-            rand = random.randint(1,3)
-            if((betelt-1 >= betelt_count) and (rand == 2)):
-                if(button_dict[i]['state'] != DISABLED):
-                    button_dict[i].config(background='#DC0000', disabledforeground='#FFF')
+            rand = random.randint(1, 3)
+            if ((betelt-1 >= betelt_count) and (rand == 2)):
+                if (button_dict[i]['state'] != DISABLED):
+                    button_dict[i].config(
+                        background='#DC0000', disabledforeground='#FFF')
                     button_dict[i]['state'] = DISABLED
                     betelt_count += 1
                 else:
@@ -127,10 +134,9 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
         betelt_count = betelt_count
 
 
-
-#==========================#
+# ==========================#
 #   SignUp - User Info
-#==========================#
+# ==========================#
 
     token = secrets.token_urlsafe(6)
 
@@ -154,39 +160,120 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
     token_inEntry.configure(state=tk.DISABLED)
 
 
-#==========================#
+# ==========================#
 #   SignUp - PDF Creator
-#==========================#
+# ==========================#
 
     def pdfCreator():
+        global kNev, vNev, ticket_chair, movie, time, tick_2d
         try:
-            fpdf = FPDF(orientation = 'P', unit = 'mm', format='A4')
+            fpdf = FPDF('P', 'mm', 'A4')
+
             fpdf.add_page()
-            fpdf.set_font("helvica", style = 'BUI', size = 15)
-            fpdf.cell(150, h = 150, txt = 'Valami', ln = 0)
-            fpdf.output(name = 'foglalas', dest = '')
+            fpdf.set_margin(15)
+            fpdf.add_font("helvetica", '', r'font\helvetica.ttf', uni=True)
 
-        except Exception as e:
-            print(f"-----------------{str(e)}-----------------")
+            fpdf.set_font("helvetica", 'BI',  24)
+            fpdf.cell(0, 30, 'FOGLALÁST AZONOSÍTÓ DOKUMENTUM', True, True, 'C')
+
+            fpdf.set_font("helvetica", 'BI',  30)
+            fpdf.cell(0, 40, '', 0, True, 'C')
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Foglaló személy', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, f'{vNev} {kNev}', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Foglalás azonosító', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, f'{token}', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Jegy típusa', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, f'{ticket_2D}, {ticket_2D_db}db', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Teremszám', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, f'{terem}', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Lefoglalt székek', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 30, f'{str(ticket_chair)}', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 40, 'FILM INFORMÁCIÓ', 0, True, 'C',)
+            fpdf.ln(1)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 10, 'Film címe', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 10, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 10, f'{movie}', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.set_font("helvetica", 'U',  15)
+            fpdf.cell(0, 20, 'Vetítés', 0, 0, 'L',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, '<<------------------------->>', 0, 0, 'C',)
+            fpdf.ln(0.33)
+            fpdf.set_font("helvetica", '',  15)
+            fpdf.cell(0, 20, f'{time} perc', 0, True, 'R',)
+            fpdf.ln(0.33)
+
+            fpdf.output(f'pdf/sikeres_foglalas_{token}.pdf', True)
+
+        except Exception as ex:
+            print(f"-----------------{str(ex)}-----------------")
 
 
-
-
-
-
-#==========================#
+# ==========================#
 #   SignUp - Import SQL
-#==========================#
+# ==========================#
 
     def Import_data():
+        global kNev, vNev, ticket_chair, movie
         try:
             ticket_chair = []
             for i in button_dict:
-                if(button_dict[i].cget('bg') == "#F7C04A"):
+                if (button_dict[i].cget('bg') == "#F7C04A"):
                     ticket_chair.append(button_dict[i].cget('text'))
             print(len(ticket_chair), ticket_2D_db)
             if (len(ticket_chair) < ticket_2D_db):
-                tk.messagebox.showinfo(title="", message="Kevesebb széket jelölt be, mint ahány jegyet kért")
+                tk.messagebox.showinfo(
+                    title="", message="Kevesebb széket jelölt be, mint ahány jegyet kért")
             if (len(ticket_chair) == ticket_2D_db):
                 kNev = kNev_inEntry.get()
                 vNev = vNev_inEntry.get()
@@ -200,7 +287,8 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
                 cursor.executemany(INSERT_Foglalasok, val)
                 cursor.execute('COMMIT')
                 root_sgnUp.destroy()
-                tk.messagebox.showinfo(title="Sikeres foglalás", message="Foglalását rögzítettük, várjuk szeretettel.")
+                tk.messagebox.showinfo(
+                    title="Sikeres foglalás", message="Foglalását rögzítettük, várjuk szeretettel.")
 
                 pdfCreator()
 
@@ -232,12 +320,13 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
     root_sgnUp.mainloop()
 
 
-
-#==========================#
+# ==========================#
 #   Ticket - Error Check
-#==========================#
+# ==========================#
 
 def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
+    global tick_2d
+    tick_2d = ticket_2D
     price = int(price)
     ticket_2D_db = int(ticket_2D_db)
     ticket_3D_db = int(ticket_3D_db)
@@ -267,10 +356,9 @@ def TicketCheck(price, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db, terem):
         Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db)
 
 
-
-#==========================#
+# ==========================#
 #   Booking - Graphics
-#==========================#
+# ==========================#
 
 def Foglal(price, terem):
 
@@ -310,7 +398,7 @@ def Foglal(price, terem):
     menu3D_C = tk.StringVar(root_foglal)
     menu3D_C.set("NONE")
     drop3D_C = tk.OptionMenu(root_foglal, menu3D_C, "NONE",
-                             "Junior", "Senior", "Felnőtt", "Kedvezményezett")
+                             "Junior", "Senior", "Adult", "Kedvezményezett")
     drop3D_C.config(bg="#1A0933", fg="#32FBE2",
                     activebackground="#30125F", activeforeground="#32FBE2")
     drop3D_C["menu"].config(bg="#1A0933", fg="#32FBE2",
@@ -319,7 +407,7 @@ def Foglal(price, terem):
     menu2D_C = tk.StringVar(root_foglal)
     menu2D_C.set("NONE")
     drop2D_C = tk.OptionMenu(root_foglal, menu2D_C, "NONE",
-                             "Junior", "Senior", "Felnőtt", "Kedvezményezett")
+                             "Junior", "Senior", "Adult", "Kedvezményezett")
     drop2D_C.config(bg="#1A0933", fg="#32FBE2",
                     activebackground="#30125F", activeforeground="#32FBE2")
     drop2D_C["menu"].config(bg="#1A0933", fg="#32FBE2",
@@ -346,7 +434,6 @@ def Foglal(price, terem):
     done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda: TicketCheck(
         price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
-
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW,
                   ipadx=5, ipady=5, padx=10, pady=(10, 25))
     lb_text00.grid(row=1, column=0, sticky=NSEW, ipadx=5,
@@ -359,7 +446,6 @@ def Foglal(price, terem):
                    ipady=5, padx=10, pady=(5, 25))
     lb_text04.grid(row=1, column=5, sticky=NSEW, ipadx=5,
                    ipady=5, padx=10, pady=(5, 25))
-
 
     lb_time2D.grid(row=3, column=0, sticky=NSEW,
                    ipadx=5, ipady=5, padx=10, pady=10)
@@ -381,13 +467,14 @@ def Foglal(price, terem):
     root_foglal.mainloop()
 
 
-
-#==========================#
+# ==========================#
 #   Movie Info - Info
-#==========================#
+# ==========================#
 
 def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
-    global betelt, maxhely
+    global betelt, maxhely, movie, time
+    movie = film
+
     terem = int(terem)
     maxh = int(maxh)
     lp_ye = int(lp_ye)
@@ -416,7 +503,6 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     kepSize = kep.resize((weightSM, heightSm))
     ujkep = ImageTk.PhotoImage(kepSize)
     kep1 = tk.Label(imgFrame, image=ujkep)
-
 
     film_lb = tk.Label(
         root_info, text=f"{film}", background='#1A0933', foreground='#F8F9FA', font=("Verdana", 15))
@@ -463,11 +549,9 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     root_info.mainloop()
 
 
-
-#==========================#
+# ==========================#
 #   Basic Menu - Start Panel
-#==========================#
-
+# ==========================#
 root = tk.Tk()
 style = ttk.Style('vapor')
 root.resizable(False, False)
