@@ -431,7 +431,10 @@ def Foglal(price, terem):
     drop3D_DB["menu"].config(bg="#1A0933", fg="#32FBE2",
                              activebackground="#30125F", activeforeground="#32FBE2")
 
-    done_ticket = tk.Button(root_foglal, text="JEGY LEFOGLALÁSA", anchor=CENTER, command=lambda: TicketCheck(
+    more_ticket = tk.Button(root_foglal, text="MÉG KÉREK JEGYET", anchor=CENTER, command=lambda: TicketCheck(
+        price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
+
+    done_ticket = tk.Button(root_foglal, text="LEFOGLALÁS", anchor=CENTER, command=lambda: TicketCheck(
         price, (menu2D_C.get()), (menu3D_C.get()), (menu2D_DB.get()), (menu3D_DB.get()), terem))
 
     lb_title.grid(row=0, column=0, columnspan=6, sticky=EW,
@@ -461,7 +464,10 @@ def Foglal(price, terem):
 
     drop2D_DB.grid(row=3, column=4, sticky=NSEW,
                    ipadx=5, ipady=5, padx=10, pady=10)
-    done_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
+
+    more_ticket.grid(row=4, column=0, columnspan=6, sticky=NSEW,
+                     ipadx=5, ipady=5, padx=10, pady=10)
+    done_ticket.grid(row=5, column=0, columnspan=6, sticky=NSEW,
                      ipadx=5, ipady=5, padx=10, pady=10)
 
     root_foglal.mainloop()
@@ -531,7 +537,26 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
 
     btn = tk.Button(root_info, text="Jegyfoglalás",
                     bg='#1A0933', command=lambda: Foglal(price, terem), font=("Verdana", 11))
+
+    myMeter = ttk.Meter(
+    root_info,
+    textfont=['Times',25,'bold'],
+    amountused=(maxh-betelt),
+    amounttotal=maxh,
+    metersize=150,
+    meterthickness=5,
+    stripethickness=12,
+    bootstyle=SUCCESS,
+    subtext='szabad hely',
+    subtextfont=['Times',10,'normal'],
+    subtextstyle=SECONDARY
+
+)
+
+
+
     kep1.pack()
+
     imgFrame.grid(row=0, column=5, rowspan=5, sticky=NSEW)
 
     film_lb.grid(row=0, column=0, sticky=W, padx=5, pady=5)
@@ -539,7 +564,7 @@ def Info(terem, film, maxh, lp_ye, lp_ca, lp_pl, price, lp_id, lp_age):
     film_desc.grid(row=1, column=0, columnspan=2, sticky=W, padx=5, pady=5)
     low_prio_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     film_age.grid(row=2, column=1, sticky=W, padx=5, pady=5)
-    szabad_lb.grid(row=3, column=1, sticky=W, padx=5, pady=5)
+    myMeter.grid(row=3, column=1, sticky=W, padx=5, pady=5)
     # maxhely_lb.grid(row=2, column=0, sticky=W, padx=5, pady=5)
     # szabad_lb.grid(row=3, column=0, sticky=W, padx=5, pady=5)
     # teremszam_lb.grid(row=4, column=0, sticky=W, padx=5, pady=5)
