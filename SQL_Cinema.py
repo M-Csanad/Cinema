@@ -136,11 +136,7 @@ def Call_SignUp(terem, ticket_2D, ticket_3D, ticket_2D_db, ticket_3D_db):
         betelt_count = betelt_count
 
 
-<<<<<<< HEAD
-#==========================#
-=======
 # ==========================#
->>>>>>> 8aaa273cc2610feeb835e733b8d56fe2a99302e8
 #   SignUp - User Info
 # ==========================#
 
@@ -619,5 +615,27 @@ btn03.grid(row=0, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 btn04.grid(row=1, column=0, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 btn05.grid(row=1, column=1, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
 btn06.grid(row=1, column=2, sticky=NSEW, ipadx=20, ipady=25, padx=10, pady=10)
+
+btn_plotly = Button(root, text="Kimutatás megnyitása", command=lambda: Plotly()).grid(row=2, column=1, ipadx=20, ipady=25, padx=10, pady=10)
+
+#Plotly kimutatás
+def Plotly():
+    pio.renderers.default = 'browser'
+
+    eredmeny = []
+    movienames = film_lst
+    foglalt = []
+
+    for i in range(1, len(film_lst)+1):
+        cursor.execute("SELECT SZEKSZAM FROM foglalasok WHERE TEREMSZAM=" + str(i))
+        eredmeny = cursor.fetchall()
+        teremfoglalt = 0
+
+        for n in range(0, len(eredmeny)):
+            teremfoglalt += len(eval(eredmeny[n][0]))
+        foglalt.append(teremfoglalt)
+
+    fig = go.Figure([go.Bar(x=movienames, y=foglalt)])
+    fig.show()
 
 root.mainloop()
